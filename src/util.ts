@@ -88,12 +88,14 @@ export function isI18nFile(uri: vscode.Uri): boolean {
     new RegExp(`^${workspaceFolder.uri.path}/`),
     ''
   )
-  if (fileRelativePath.startsWith(i18nGlobalFilesDir)) {
+  if (i18nGlobalFilesDir && fileRelativePath.startsWith(i18nGlobalFilesDir)) {
     return true
   }
 
   if (
+    i18nNonGlobalFilesDir &&
     fileRelativePath.startsWith(i18nNonGlobalFilesDir) &&
+    i18nNonGlobalFileSuffix &&
     fileRelativePath.endsWith(i18nNonGlobalFileSuffix)
   ) {
     return true
@@ -118,14 +120,18 @@ export function parseNameSpace(filePath: string): string {
   )
 
   const configuration = vscode.workspace.getConfiguration(EXTENSION_NAME)
+  const { i18nNonGlobalFileSuffix } = configuration
 
-  if (fileRelativePath.endsWith(configuration.i18nNonGlobalFileSuffix)) {
+  if (
+    i18nNonGlobalFileSuffix &&
+    fileRelativePath.endsWith(i18nNonGlobalFileSuffix)
+  ) {
     return getFormattedName(
       'i18nNamespaceNamingStyle',
       fileRelativePath
         .split('/')
         .pop()!
-        .replace(new RegExp(`${configuration.i18nNonGlobalFileSuffix}$`), '')
+        .replace(new RegExp(`${i18nNonGlobalFileSuffix}$`), '')
     )
   }
 
