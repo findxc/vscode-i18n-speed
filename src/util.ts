@@ -120,7 +120,7 @@ export function parseNameSpace(filePath: string): string {
   )
 
   const configuration = vscode.workspace.getConfiguration(EXTENSION_NAME)
-  const { i18nNonGlobalFileSuffix } = configuration
+  const { i18nGlobalFilesDir, i18nNonGlobalFileSuffix } = configuration
 
   if (
     i18nNonGlobalFileSuffix &&
@@ -136,6 +136,7 @@ export function parseNameSpace(filePath: string): string {
   }
 
   return fileRelativePath
+    .replace(new RegExp(`${i18nGlobalFilesDir}/`), '')
     .replace(/\.json$/, '')
     .split('/')
     .map(item => getFormattedName('i18nNamespaceNamingStyle', item))

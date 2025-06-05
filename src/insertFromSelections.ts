@@ -62,12 +62,12 @@ export default async function insertFromSelections() {
       uri.path.startsWith(item.uri.path)
     )!
     const fileRelativePath = uri.path.replace(
-      new RegExp(`^${workspaceFolder.uri.path}`),
+      new RegExp(`^${workspaceFolder.uri.path}/`),
       ''
     )
     const fileRelativePathContainWorkspaceFolderName = uri.path.replace(
       new RegExp(
-        `^${workspaceFolder.uri.path.split('/').slice(0, -1).join('/')}`
+        `^${workspaceFolder.uri.path.split('/').slice(0, -1).join('/')}/`
       ),
       ''
     )
