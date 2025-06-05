@@ -3,6 +3,10 @@
   "displayName": "I18n Helper",
   "description": "",
   "version": "0.0.1",
+  "keywords": [
+    "i18n"
+  ],
+  "publisher": "findxc",
   "engines": {
     "vscode": "^1.100.0"
   },
