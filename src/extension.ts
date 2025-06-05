@@ -1,26 +1,33 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'
+import insert from './insert'
+import insertFromSelections from './insertFromSelections'
+import insertFromClipboard from './insertFromClipboard'
+import DefinitionProviderForI18nIdentifier from './DefinitionProviderForI18nIdentifier'
+import ReferenceProviderForI18nFile from './ReferenceProviderForI18nFile'
+import { EXTENSION_NAME } from './constant'
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  const disposables = [
+    vscode.commands.registerCommand(`${EXTENSION_NAME}.insert`, insert),
+    vscode.commands.registerCommand(
+      `${EXTENSION_NAME}.insertFromSelections`,
+      insertFromSelections
+    ),
+    vscode.commands.registerCommand(
+      `${EXTENSION_NAME}.insertFromClipboard`,
+      insertFromClipboard
+    ),
+    vscode.languages.registerDefinitionProvider(
+      [{ language: 'html' }, { language: 'typescript' }],
+      new DefinitionProviderForI18nIdentifier()
+    ),
+    vscode.languages.registerReferenceProvider(
+      [{ language: 'json' }],
+      new ReferenceProviderForI18nFile()
+    ),
+  ]
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "i18n-helper" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('i18n-helper.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from I18n Helper!');
-	});
-
-	context.subscriptions.push(disposable);
+  context.subscriptions.push(...disposables)
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}

@@ -9,13 +9,125 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:json",
+    "onLanguage:html",
+    "onLanguage:typescript"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "i18n-helper.helloWorld",
-        "title": "Hello World"
+        "command": "i18n-helper.insert",
+        "title": "i18n: Insert"
+      },
+      {
+        "command": "i18n-helper.insertFromClipboard",
+        "title": "i18n: Insert From Clipboard"
+      },
+      {
+        "command": "i18n-helper.insertFromSelections",
+        "title": "i18n: Insert From Selections"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "i18n-helper.insert",
+        "key": "ctrl+k i",
+        "mac": "cmd+k i"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "I18n Helper",
+        "properties": {
+          "i18n-helper.i18nGlobalFilesDir": {
+            "order": 1,
+            "type": "string",
+            "default": "src/i18n",
+            "description": ""
+          },
+          "i18n-helper.i18nNonGlobalFilesDir": {
+            "order": 2,
+            "type": "string",
+            "default": "src",
+            "description": ""
+          },
+          "i18n-helper.i18nNonGlobalFileSuffix": {
+            "order": 3,
+            "type": "string",
+            "default": ".i18n.json",
+            "description": ""
+          },
+          "i18n-helper.i18nFolderNamingStyle": {
+            "order": 10,
+            "type": "string",
+            "enum": [
+              "camelCase",
+              "kebabCase",
+              "snakeCase",
+              "upperSnakeCase"
+            ],
+            "markdownEnumDescriptions": [
+              "fooBar",
+              "foo-bar",
+              "foo_bar",
+              "FOO_BAR"
+            ],
+            "default": "camelCase"
+          },
+          "i18n-helper.i18nFileNamingStyle": {
+            "order": 11,
+            "type": "string",
+            "enum": [
+              "camelCase",
+              "kebabCase",
+              "snakeCase",
+              "upperSnakeCase"
+            ],
+            "markdownEnumDescriptions": [
+              "fooBar",
+              "foo-bar",
+              "foo_bar",
+              "FOO_BAR"
+            ],
+            "default": "camelCase"
+          },
+          "i18n-helper.i18nNamespaceNamingStyle": {
+            "order": 12,
+            "type": "string",
+            "enum": [
+              "camelCase",
+              "kebabCase",
+              "snakeCase",
+              "upperSnakeCase"
+            ],
+            "markdownEnumDescriptions": [
+              "fooBar",
+              "foo-bar",
+              "foo_bar",
+              "FOO_BAR"
+            ],
+            "default": "camelCase"
+          },
+          "i18n-helper.i18nKeyNamingStyle": {
+            "order": 13,
+            "type": "string",
+            "enum": [
+              "camelCase",
+              "kebabCase",
+              "snakeCase",
+              "upperSnakeCase"
+            ],
+            "markdownEnumDescriptions": [
+              "fooBar",
+              "foo-bar",
+              "foo_bar",
+              "FOO_BAR"
+            ],
+            "default": "camelCase"
+          }
+        }
       }
     ]
   },
@@ -28,14 +140,18 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.100.0",
+    "@types/lodash": "^4.17.17",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
+    "@types/vscode": "^1.100.0",
     "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
-    "eslint": "^9.25.1",
-    "typescript": "^5.8.3",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.5.2"
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }
