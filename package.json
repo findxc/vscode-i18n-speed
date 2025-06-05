@@ -1,6 +1,6 @@
 {
-  "name": "i18n-helper",
-  "displayName": "I18n Helper",
+  "name": "i18n-speed",
+  "displayName": "I18n Speed",
   "description": "",
   "version": "0.0.1",
   "keywords": [
@@ -22,48 +22,48 @@
   "contributes": {
     "commands": [
       {
-        "command": "i18n-helper.insert",
+        "command": "i18n-speed.insert",
         "title": "i18n: Insert"
       },
       {
-        "command": "i18n-helper.insertFromClipboard",
+        "command": "i18n-speed.insertFromClipboard",
         "title": "i18n: Insert From Clipboard"
       },
       {
-        "command": "i18n-helper.insertFromSelections",
+        "command": "i18n-speed.insertFromSelections",
         "title": "i18n: Insert From Selections"
       }
     ],
     "keybindings": [
       {
-        "command": "i18n-helper.insert",
+        "command": "i18n-speed.insert",
         "key": "ctrl+k i",
         "mac": "cmd+k i"
       }
     ],
     "configuration": [
       {
-        "title": "I18n Helper",
+        "title": "I18n Speed",
         "properties": {
-          "i18n-helper.i18nGlobalFilesDir": {
+          "i18n-speed.i18nGlobalFilesDir": {
             "order": 1,
             "type": "string",
             "default": "src/i18n",
             "description": ""
           },
-          "i18n-helper.i18nNonGlobalFilesDir": {
+          "i18n-speed.i18nNonGlobalFilesDir": {
             "order": 2,
             "type": "string",
             "default": "src",
             "description": ""
           },
-          "i18n-helper.i18nNonGlobalFileSuffix": {
+          "i18n-speed.i18nNonGlobalFileSuffix": {
             "order": 3,
             "type": "string",
             "default": ".i18n.json",
             "description": ""
           },
-          "i18n-helper.i18nFolderNamingStyle": {
+          "i18n-speed.i18nFolderNamingStyle": {
             "order": 10,
             "type": "string",
             "enum": [
@@ -80,7 +80,7 @@
             ],
             "default": "camelCase"
           },
-          "i18n-helper.i18nFileNamingStyle": {
+          "i18n-speed.i18nFileNamingStyle": {
             "order": 11,
             "type": "string",
             "enum": [
@@ -97,7 +97,7 @@
             ],
             "default": "camelCase"
           },
-          "i18n-helper.i18nNamespaceNamingStyle": {
+          "i18n-speed.i18nNamespaceNamingStyle": {
             "order": 12,
             "type": "string",
             "enum": [
@@ -114,7 +114,7 @@
             ],
             "default": "camelCase"
           },
-          "i18n-helper.i18nKeyNamingStyle": {
+          "i18n-speed.i18nKeyNamingStyle": {
             "order": 13,
             "type": "string",
             "enum": [
