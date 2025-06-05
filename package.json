@@ -37,8 +37,8 @@
     "keybindings": [
       {
         "command": "i18n-speed.insert",
-        "key": "ctrl+k i",
-        "mac": "cmd+k i"
+        "key": "ctrl+1",
+        "mac": "cmd+1"
       }
     ],
     "configuration": [
