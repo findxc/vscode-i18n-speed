@@ -118,18 +118,20 @@
             "order": 13,
             "type": "string",
             "enum": [
+              "hash",
               "camelCase",
               "kebabCase",
               "snakeCase",
               "upperSnakeCase"
             ],
             "markdownEnumDescriptions": [
+              "random 4 characters, e.g. `gpxu`",
               "fooBar",
               "foo-bar",
               "foo_bar",
               "FOO_BAR"
             ],
-            "default": "camelCase"
+            "default": "hash"
           }
         }
       }

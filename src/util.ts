@@ -160,12 +160,13 @@ export function getFormattedI18nKeyAndText(
 }
 
 const parseKeyMap: {
-  [P in NamingStyle]: (v: string) => string
+  [P in NamingStyle | 'hash']: (v: string) => string
 } = {
   camelCase: (v: string): string => camelCase(v),
   kebabCase: (v: string): string => kebabCase(v),
   snakeCase: (v: string): string => snakeCase(v),
   upperSnakeCase: (v: string): string => snakeCase(v).toUpperCase(),
+  hash: (v: string): string => generateHash(),
 }
 
 export function getFormattedName(
@@ -245,4 +246,9 @@ export function parseSymbolFromPath(
     }
   }
   return undefined
+}
+
+export function generateHash(): string {
+  // TODO may be need to use a better hash function
+  return (+new Date() * Math.random()).toString(36).substring(0, 4)
 }
