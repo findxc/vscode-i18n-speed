@@ -143,20 +143,16 @@ export function parseNameSpace(filePath: string): string {
     .join(':')
 }
 
-export function getFormattedI18nKeyAndText(
+export function getFormattedI18nText(
   text: string | undefined,
   uri?: vscode.Uri
-): {
-  key: string
-  text: string
-} {
+): string {
   text = (text || '').replace(/\n+ */g, ' ').trim()
-  // TODO need test react or to consider tsx or jsx?
+  // TODO actually we need to consider whether text is wrapped by html tag or not
   if (uri?.path.endsWith('.ts')) {
-    text = text.replace(/^(['"`])(.+)\1$/, '$2') // Remove quotes from TypeScript strings
+    text = text.replace(/^(['"`])(.+)\1$/, '$2') // Remove quotes
   }
-  const key = getFormattedName('i18nKeyNamingStyle', text)
-  return { key, text }
+  return text
 }
 
 const parseKeyMap: {
@@ -178,10 +174,21 @@ export function getFormattedName(
   return parseKeyMap[value](text)
 }
 
+function generateUniqKey(json: object, generator: () => string): string {
+  let key = undefined
+  while (!key) {
+    key = generator()
+    if (key in json) {
+      key = undefined
+    }
+  }
+  return key
+}
+
 export async function updateJsonContent(
   uri: vscode.Uri,
-  values: { key: string; text: string }[]
-) {
+  texts: string[]
+): Promise<string[]> {
   let fileContent = (await vscode.workspace.fs.readFile(uri)).toString()
 
   if (isfileEmpty(fileContent)) {
@@ -196,14 +203,47 @@ export async function updateJsonContent(
     throw new Error(`Not a valid JSON file: ${uri.path}. Error: ${error}`)
   }
 
-  values.forEach(item => {
-    jsonContent[item.key] = item.text
+  const keys: string[] = []
+
+  texts.forEach(text => {
+    let textExist = false
+
+    for (const k in jsonContent) {
+      if (jsonContent[k] === text) {
+        textExist = true
+        keys.push(k)
+        break
+      }
+    }
+
+    if (!textExist) {
+      const i18nKeyNamingStyle =
+        vscode.workspace.getConfiguration(EXTENSION_NAME).i18nKeyNamingStyle
+
+      let key: string
+
+      if (i18nKeyNamingStyle === 'hash') {
+        key = generateUniqKey(jsonContent, () =>
+          getFormattedName('i18nKeyNamingStyle', text)
+        )
+      } else {
+        key = getFormattedName('i18nKeyNamingStyle', text)
+        if (key in jsonContent) {
+          key = generateUniqKey(jsonContent, () => `${key}_${generateHash()}`)
+        }
+      }
+
+      keys.push(key)
+      jsonContent[key] = text
+    }
   })
 
   await vscode.workspace.fs.writeFile(
     uri,
     Buffer.from(`${JSON.stringify(jsonContent, null, TAB_WIDTH)}\n`, 'utf8')
   )
+
+  return keys
 }
 
 function isfileEmpty(content: string): boolean {

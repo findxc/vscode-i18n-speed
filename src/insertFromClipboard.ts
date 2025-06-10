@@ -1,9 +1,5 @@
 import * as vscode from 'vscode'
-import {
-  getFormattedI18nKeyAndText,
-  isI18nFile,
-  updateJsonContent,
-} from './util'
+import { getFormattedI18nText, isI18nFile, updateJsonContent } from './util'
 
 export default async function insertFromClipboard() {
   const editor = vscode.window.activeTextEditor
@@ -21,14 +17,14 @@ export default async function insertFromClipboard() {
 
   const clipboard = await vscode.env.clipboard.readText()
 
-  const { key, text } = getFormattedI18nKeyAndText(clipboard)
+  const text = getFormattedI18nText(clipboard)
 
-  if (!key) {
+  if (!text) {
     await vscode.window.showInformationMessage('Clipboard is empty')
     return
   }
 
-  await updateJsonContent(editor.document.uri, [{ key, text }])
+  await updateJsonContent(editor.document.uri, [text])
 
   // const cursorLine = editor.selection.active.line
   // const position = new vscode.Position(cursorLine + 1, 0)

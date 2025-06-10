@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import { sortBy } from 'lodash'
 import {
-  getFormattedI18nKeyAndText,
+  getFormattedI18nText,
   getI18nFilesGlobPattern,
   parseNameSpace,
   updateJsonContent,
@@ -23,17 +23,13 @@ export default async function insertFromSelections() {
   const selections = editor.selections
     .map(selection => {
       const originText = editor.document.getText(selection)
-      const { key, text } = getFormattedI18nKeyAndText(
-        originText,
-        editor.document.uri
-      )
+      const text = getFormattedI18nText(originText, editor.document.uri)
       return {
         selection,
         text,
-        key,
       }
     })
-    .filter(item => item.key)
+    .filter(item => item.text)
 
   if (!selections.length) {
     vscode.window.showInformationMessage('No valid text selections found')
@@ -100,7 +96,10 @@ export default async function insertFromSelections() {
 
   lastSelectedI18nFile = i18nFileSelected.label
 
-  await updateJsonContent(i18nFileSelected.uri, selections)
+  const keys = await updateJsonContent(
+    i18nFileSelected.uri,
+    selections.map(item => item.text)
+  )
 
   const namespace = parseNameSpace(i18nFileSelected.uri.path)
 
@@ -108,9 +107,9 @@ export default async function insertFromSelections() {
   const isHtmlFile = editor.document.fileName.endsWith('.html')
 
   editor.edit(editBuilder => {
-    selections.forEach(item => {
+    selections.forEach((item, index) => {
       // TODO read 't' from configuration?
-      let value = `t('${namespace}:${item.key}')`
+      let value = `t('${namespace}:${keys[index]}')`
 
       value = isHtmlFile ? `{{ ${value} }}` : `this.${value}`
       editBuilder.replace(item.selection, value)
