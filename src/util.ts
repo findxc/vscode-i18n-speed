@@ -5,76 +5,31 @@ import { Configuration, NamingStyle } from './type'
 
 export function getI18nFilesGlobPattern(): string {
   const configuration = vscode.workspace.getConfiguration(EXTENSION_NAME)
-  const { i18nGlobalFilesDir, i18nNonGlobalFilesDir, i18nNonGlobalFileSuffix } =
-    configuration
-
-  const globPatterns = [
-    i18nGlobalFilesDir ? `${i18nGlobalFilesDir}/**/*.json` : '',
-    i18nNonGlobalFilesDir && i18nNonGlobalFileSuffix
-      ? `${i18nNonGlobalFilesDir}/**/*${i18nNonGlobalFileSuffix}`
-      : '',
-  ].filter(item => item)
-
-  if (!globPatterns.length) {
-    return ''
-  }
-
-  if (globPatterns.length === 1) {
-    return globPatterns[0]
-  }
-
-  return `{${globPatterns.join(',')}}`
+  const { i18nGlobalFilesDir } = configuration
+  return i18nGlobalFilesDir ? `${i18nGlobalFilesDir}/*.json` : ''
 }
 
 export function getI18nFilesGlobPatternOfI18nIdentifier(
   i18nIdentifier: string
 ): string {
   const configuration = vscode.workspace.getConfiguration(EXTENSION_NAME)
-  const { i18nGlobalFilesDir, i18nNonGlobalFilesDir, i18nNonGlobalFileSuffix } =
-    configuration
+  const { i18nGlobalFilesDir } = configuration
 
-  const namespaceList = i18nIdentifier.split(':').slice(0, -1)
-
-  const globPatterns = []
-
-  if (i18nGlobalFilesDir) {
-    const globalFilePath = [
-      ...namespaceList
-        .slice(0, -1)
-        .map(item => getFormattedName('i18nFolderNamingStyle', item)),
-      ...namespaceList
-        .slice(-1)
-        .map(item => getFormattedName('i18nFileNamingStyle', item)),
-    ].join('/')
-    globPatterns.push(`${i18nGlobalFilesDir}/${globalFilePath}.json`)
-  }
-
-  if (i18nNonGlobalFilesDir && i18nNonGlobalFileSuffix) {
-    const nonGlobalFilePath = getFormattedName(
-      'i18nFileNamingStyle',
-      namespaceList.join('_')
-    )
-    globPatterns.push(
-      `${i18nNonGlobalFilesDir}/**/${nonGlobalFilePath}${i18nNonGlobalFileSuffix}`
-    )
-  }
-
-  if (!globPatterns.length) {
+  const [namespace] = i18nIdentifier.split(':')
+  if (!namespace) {
     return ''
   }
 
-  if (globPatterns.length === 1) {
-    return globPatterns[0]
-  }
-
-  return `{${globPatterns.join(',')}}`
+  return `${i18nGlobalFilesDir}/${getFormattedName(
+    'i18nFolderNamingStyle',
+    namespace
+  )}.json`
 }
 
 export function isI18nFile(uri: vscode.Uri): boolean {
   const filePath = uri.path
   const configuration = vscode.workspace.getConfiguration(EXTENSION_NAME)
-  const { i18nGlobalFilesDir, i18nNonGlobalFilesDir, i18nNonGlobalFileSuffix } =
-    configuration
+  const { i18nGlobalFilesDir } = configuration
 
   const workspaceFolder = vscode.workspace.workspaceFolders?.find(item =>
     filePath.startsWith(item.uri.path)
@@ -88,15 +43,11 @@ export function isI18nFile(uri: vscode.Uri): boolean {
     new RegExp(`^${workspaceFolder.uri.path}/`),
     ''
   )
-  if (i18nGlobalFilesDir && fileRelativePath.startsWith(i18nGlobalFilesDir)) {
-    return true
-  }
 
   if (
-    i18nNonGlobalFilesDir &&
-    fileRelativePath.startsWith(i18nNonGlobalFilesDir) &&
-    i18nNonGlobalFileSuffix &&
-    fileRelativePath.endsWith(i18nNonGlobalFileSuffix)
+    i18nGlobalFilesDir &&
+    fileRelativePath.startsWith(i18nGlobalFilesDir) &&
+    fileRelativePath.endsWith('.json')
   ) {
     return true
   }
@@ -120,20 +71,7 @@ export function parseNameSpace(filePath: string): string {
   )
 
   const configuration = vscode.workspace.getConfiguration(EXTENSION_NAME)
-  const { i18nGlobalFilesDir, i18nNonGlobalFileSuffix } = configuration
-
-  if (
-    i18nNonGlobalFileSuffix &&
-    fileRelativePath.endsWith(i18nNonGlobalFileSuffix)
-  ) {
-    return getFormattedName(
-      'i18nNamespaceNamingStyle',
-      fileRelativePath
-        .split('/')
-        .pop()!
-        .replace(new RegExp(`${i18nNonGlobalFileSuffix}$`), '')
-    )
-  }
+  const { i18nGlobalFilesDir } = configuration
 
   return fileRelativePath
     .replace(new RegExp(`${i18nGlobalFilesDir}/`), '')

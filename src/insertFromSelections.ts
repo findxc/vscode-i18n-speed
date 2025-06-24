@@ -39,7 +39,7 @@ export default async function insertFromSelections() {
   const i18nFilesGlobPattern = getI18nFilesGlobPattern()
   if (!i18nFilesGlobPattern) {
     vscode.window.showInformationMessage(
-      'Need configure at least i18nGlobalFilesDir or (i18nNonGlobalFilesDir and i18nNonGlobalFileSuffix)'
+      'Need configure i18nGlobalFilesDir at first'
     )
     return
   }

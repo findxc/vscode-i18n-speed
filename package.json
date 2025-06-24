@@ -51,18 +51,6 @@
             "default": "src/i18n",
             "description": ""
           },
-          "i18n-speed.i18nNonGlobalFilesDir": {
-            "order": 2,
-            "type": "string",
-            "default": "src",
-            "description": ""
-          },
-          "i18n-speed.i18nNonGlobalFileSuffix": {
-            "order": 3,
-            "type": "string",
-            "default": ".i18n.json",
-            "description": ""
-          },
           "i18n-speed.i18nFolderNamingStyle": {
             "order": 10,
             "type": "string",

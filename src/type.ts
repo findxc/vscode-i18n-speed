@@ -12,10 +12,6 @@ export type NamingStyle =
 
 export interface Configuration {
   i18nGlobalFilesDir: string
-
-  i18nNonGlobalFilesDir: string
-  i18nNonGlobalFileSuffix: string
-
   i18nFolderNamingStyle: NamingStyle
   i18nFileNamingStyle: NamingStyle
   i18nNamespaceNamingStyle: NamingStyle

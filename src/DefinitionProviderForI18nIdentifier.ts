@@ -57,7 +57,7 @@ export default class DefinitionProviderForI18nIdentifier
         getI18nFilesGlobPatternOfI18nIdentifier(i18nIdentifier)
       if (!i18nFilesGlobPattern) {
         vscode.window.showInformationMessage(
-          'Need configure at least i18nGlobalFilesDir or (i18nNonGlobalFilesDir and i18nNonGlobalFileSuffix)'
+          'Need configure i18nGlobalFilesDir at first'
         )
         resolve(undefined)
         return
