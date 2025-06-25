@@ -12,7 +12,6 @@ export type NamingStyle =
 
 export interface Configuration {
   i18nGlobalFilesDir: string
-  i18nFolderNamingStyle: NamingStyle
   i18nFileNamingStyle: NamingStyle
   i18nNamespaceNamingStyle: NamingStyle
   i18nKeyNamingStyle: NamingStyle | 'hash'

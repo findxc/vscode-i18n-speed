@@ -11,7 +11,8 @@ import { I18N_URIS_CACHE_KEY } from './constant'
 let lastSelectedI18nFile = ''
 
 export default async function insertFromSelections(
-  context: vscode.ExtensionContext
+  context: vscode.ExtensionContext,
+  forceHashKey: boolean = false
 ) {
   const editor = vscode.window.activeTextEditor
   if (!editor) {
@@ -103,7 +104,8 @@ export default async function insertFromSelections(
 
   const keys = await updateJsonContent(
     i18nFileSelected.uri,
-    selections.map(item => item.text)
+    selections.map(item => item.text),
+    forceHashKey
   )
 
   const namespace = parseNameSpace(i18nFileSelected.uri.path)

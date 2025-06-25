@@ -1,7 +1,10 @@
 import * as vscode from 'vscode'
 import { getFormattedI18nText, isI18nFile, updateJsonContent } from './util'
 
-export default async function insertFromClipboard(context: vscode.ExtensionContext) {
+export default async function insertFromClipboard(
+  context: vscode.ExtensionContext,
+  forceHashKey: boolean = false
+) {
   const editor = vscode.window.activeTextEditor
 
   if (!editor) {
@@ -24,7 +27,7 @@ export default async function insertFromClipboard(context: vscode.ExtensionConte
     return
   }
 
-  await updateJsonContent(editor.document.uri, [text])
+  await updateJsonContent(editor.document.uri, [text], forceHashKey)
 
   // const cursorLine = editor.selection.active.line
   // const position = new vscode.Position(cursorLine + 1, 0)

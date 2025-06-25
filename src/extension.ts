@@ -15,6 +15,10 @@ export function activate(context: vscode.ExtensionContext) {
       insert(context)
     ),
     vscode.commands.registerCommand(
+      `${EXTENSION_NAME}.insertForceHashKey`,
+      () => insert(context, true)
+    ),
+    vscode.commands.registerCommand(
       `${EXTENSION_NAME}.insertFromSelections`,
       () => insertFromSelections(context)
     ),

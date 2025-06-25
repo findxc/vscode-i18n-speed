@@ -21,7 +21,7 @@ export function parseFilePathFromI18nIdentifier(
   }
 
   return `${i18nGlobalFilesDir}/${getFormattedName(
-    'i18nFolderNamingStyle',
+    'i18nFileNamingStyle',
     namespace
   )}.json`
 }
@@ -125,7 +125,8 @@ function generateUniqKey(json: object, generator: () => string): string {
 
 export async function updateJsonContent(
   uri: vscode.Uri,
-  texts: string[]
+  texts: string[],
+  forceHashKey = false
 ): Promise<string[]> {
   let fileContent = (await vscode.workspace.fs.readFile(uri)).toString()
 
@@ -155,8 +156,9 @@ export async function updateJsonContent(
     }
 
     if (!textExist) {
-      const i18nKeyNamingStyle =
-        vscode.workspace.getConfiguration(EXTENSION_NAME).i18nKeyNamingStyle
+      const i18nKeyNamingStyle = forceHashKey
+        ? 'hash'
+        : vscode.workspace.getConfiguration(EXTENSION_NAME).i18nKeyNamingStyle
 
       let key: string
 

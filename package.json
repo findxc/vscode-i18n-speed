@@ -26,6 +26,10 @@
         "title": "i18n: Insert"
       },
       {
+        "command": "i18n-speed.insertForceHashKey",
+        "title": "i18n: Insert (force hash key)"
+      },
+      {
         "command": "i18n-speed.insertFromClipboard",
         "title": "i18n: Insert From Clipboard"
       },
@@ -39,6 +43,11 @@
         "command": "i18n-speed.insert",
         "key": "ctrl+1",
         "mac": "cmd+1"
+      },
+      {
+        "command": "i18n-speed.insertForceHashKey",
+        "key": "ctrl+2",
+        "mac": "cmd+2"
       }
     ],
     "configuration": [
@@ -50,23 +59,6 @@
             "type": "string",
             "default": "src/i18n",
             "description": ""
-          },
-          "i18n-speed.i18nFolderNamingStyle": {
-            "order": 10,
-            "type": "string",
-            "enum": [
-              "camelCase",
-              "kebabCase",
-              "snakeCase",
-              "upperSnakeCase"
-            ],
-            "markdownEnumDescriptions": [
-              "fooBar",
-              "foo-bar",
-              "foo_bar",
-              "FOO_BAR"
-            ],
-            "default": "camelCase"
           },
           "i18n-speed.i18nFileNamingStyle": {
             "order": 11,
@@ -119,7 +111,7 @@
               "foo_bar",
               "FOO_BAR"
             ],
-            "default": "hash"
+            "default": "camelCase"
           }
         }
       }
