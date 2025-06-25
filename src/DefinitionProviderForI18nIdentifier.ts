@@ -50,9 +50,6 @@ export default class DefinitionProviderForI18nIdentifier
         return
       }
 
-      // TODO need handle if file not exist
-      // TODO listen to i18n files when extension active and then cache fileUris?
-
       // TODO now only support one workspace folder and will not listen workspace folder changes
       if (vscode.workspace.workspaceFolders?.length !== 1) {
         return
@@ -66,6 +63,8 @@ export default class DefinitionProviderForI18nIdentifier
       if (!i18nUri) {
         throw new Error(`No i18n files found for ${i18nIdentifier}`)
       }
+
+      // TODO need handle if file not exist?
 
       vscode.commands
         .executeCommand<vscode.DocumentSymbol[]>(
