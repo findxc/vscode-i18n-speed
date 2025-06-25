@@ -16,5 +16,5 @@ export default async function insert(
     ? `${EXTENSION_NAME}.insertFromClipboard`
     : `${EXTENSION_NAME}.insertFromSelections`
 
-  await vscode.commands.executeCommand(command, context, forceHashKey)
+  await vscode.commands.executeCommand(command, forceHashKey)
 }

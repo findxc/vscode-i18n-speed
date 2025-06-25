@@ -163,9 +163,7 @@ export async function updateJsonContent(
       let key: string
 
       if (i18nKeyNamingStyle === 'hash') {
-        key = generateUniqKey(jsonContent, () =>
-          getFormattedName('i18nKeyNamingStyle', text)
-        )
+        key = generateUniqKey(jsonContent, () => generateHash())
       } else {
         key = getFormattedName('i18nKeyNamingStyle', text)
         if (key in jsonContent) {

@@ -20,11 +20,11 @@ export function activate(context: vscode.ExtensionContext) {
     ),
     vscode.commands.registerCommand(
       `${EXTENSION_NAME}.insertFromSelections`,
-      () => insertFromSelections(context)
+      (forceHashKey) => insertFromSelections(context, forceHashKey)
     ),
     vscode.commands.registerCommand(
       `${EXTENSION_NAME}.insertFromClipboard`,
-      () => insertFromClipboard(context)
+      (forceHashKey) => insertFromClipboard(context, forceHashKey)
     ),
     vscode.languages.registerDefinitionProvider(
       [{ language: 'html' }, { language: 'typescript' }],
