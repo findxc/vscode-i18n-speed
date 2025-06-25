@@ -1,8 +1,5 @@
 import * as vscode from 'vscode'
-import {
-  getI18nFilesGlobPatternOfI18nIdentifier,
-  parseSymbolFromPath,
-} from './util'
+import { parseFilePathFromI18nIdentifier, parseSymbolFromPath } from './util'
 
 export default class DefinitionProviderForI18nIdentifier
   implements vscode.DefinitionProvider
@@ -53,32 +50,29 @@ export default class DefinitionProviderForI18nIdentifier
         return
       }
 
-      const i18nFilesGlobPattern =
-        getI18nFilesGlobPatternOfI18nIdentifier(i18nIdentifier)
-      if (!i18nFilesGlobPattern) {
-        vscode.window.showInformationMessage(
-          'Need configure i18nGlobalFilesDir at first'
-        )
-        resolve(undefined)
-        return
-      }
-
       // TODO need handle if file not exist
       // TODO listen to i18n files when extension active and then cache fileUris?
 
-      vscode.workspace
-        .findFiles(i18nFilesGlobPattern, undefined, 1)
-        .then(([i18nUri]) => {
-          if (!i18nUri) {
-            throw new Error(`No i18n files found for ${i18nIdentifier}`)
-          }
-          return vscode.commands
-            .executeCommand<vscode.DocumentSymbol[]>(
-              'vscode.executeDocumentSymbolProvider',
-              i18nUri
-            )
-            .then(symbols => ({ i18nUri, symbols }))
-        })
+      // TODO now only support one workspace folder and will not listen workspace folder changes
+      if (vscode.workspace.workspaceFolders?.length !== 1) {
+        return
+      }
+
+      const i18nUri = vscode.Uri.joinPath(
+        vscode.workspace.workspaceFolders[0].uri,
+        parseFilePathFromI18nIdentifier(i18nIdentifier)
+      )
+
+      if (!i18nUri) {
+        throw new Error(`No i18n files found for ${i18nIdentifier}`)
+      }
+
+      vscode.commands
+        .executeCommand<vscode.DocumentSymbol[]>(
+          'vscode.executeDocumentSymbolProvider',
+          i18nUri
+        )
+        .then(symbols => ({ i18nUri, symbols }))
         .then(({ i18nUri, symbols }) => {
           const symbolPath = i18nIdentifier.split(':').pop()?.split('.')
           const symbol = parseSymbolFromPath(symbols, symbolPath)

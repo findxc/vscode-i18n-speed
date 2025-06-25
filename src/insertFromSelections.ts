@@ -6,10 +6,13 @@ import {
   parseNameSpace,
   updateJsonContent,
 } from './util'
+import { I18N_URIS_CACHE_KEY } from './constant'
 
 let lastSelectedI18nFile = ''
 
-export default async function insertFromSelections() {
+export default async function insertFromSelections(
+  context: vscode.ExtensionContext
+) {
   const editor = vscode.window.activeTextEditor
   if (!editor) {
     return
@@ -44,7 +47,9 @@ export default async function insertFromSelections() {
     return
   }
 
-  const i18nUris = await vscode.workspace.findFiles(i18nFilesGlobPattern)
+  const i18nUriStrings =
+    context.workspaceState.get<string[]>(I18N_URIS_CACHE_KEY) || []
+  const i18nUris = i18nUriStrings.map(item => vscode.Uri.parse(item))
 
   if (!i18nUris.length) {
     vscode.window.showInformationMessage('No i18n files found in the workspace')

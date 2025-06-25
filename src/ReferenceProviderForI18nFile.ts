@@ -34,7 +34,7 @@ export default class ReferenceProviderForI18nFile
           }
 
           const translationKey = symbolPath
-            .map(item => getFormattedName('i18nKeyNamingStyle', item))
+            // .map(item => getFormattedName('i18nKeyNamingStyle', item))
             .join('.')
           const namespace = parseNameSpace(document.fileName)
           const identifier = `${namespace}:${translationKey}`

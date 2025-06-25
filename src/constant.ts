@@ -4,3 +4,5 @@ export const EXTENSION_NAME = packageJson.name
 
 // TODO read from prettier / eslint / editorconfig for better generated code format
 export const TAB_WIDTH = 2
+
+export const I18N_URIS_CACHE_KEY = 'i18nUris'

@@ -9,7 +9,7 @@ export function getI18nFilesGlobPattern(): string {
   return i18nGlobalFilesDir ? `${i18nGlobalFilesDir}/*.json` : ''
 }
 
-export function getI18nFilesGlobPatternOfI18nIdentifier(
+export function parseFilePathFromI18nIdentifier(
   i18nIdentifier: string
 ): string {
   const configuration = vscode.workspace.getConfiguration(EXTENSION_NAME)

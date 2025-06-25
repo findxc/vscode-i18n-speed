@@ -5,17 +5,22 @@ import insertFromClipboard from './insertFromClipboard'
 import DefinitionProviderForI18nIdentifier from './DefinitionProviderForI18nIdentifier'
 import ReferenceProviderForI18nFile from './ReferenceProviderForI18nFile'
 import { EXTENSION_NAME } from './constant'
+import cacheI18nUris from './cacheI18nUris'
 
 export function activate(context: vscode.ExtensionContext) {
+  cacheI18nUris(context)
+
   const disposables = [
-    vscode.commands.registerCommand(`${EXTENSION_NAME}.insert`, insert),
+    vscode.commands.registerCommand(`${EXTENSION_NAME}.insert`, () =>
+      insert(context)
+    ),
     vscode.commands.registerCommand(
       `${EXTENSION_NAME}.insertFromSelections`,
-      insertFromSelections
+      () => insertFromSelections(context)
     ),
     vscode.commands.registerCommand(
       `${EXTENSION_NAME}.insertFromClipboard`,
-      insertFromClipboard
+      () => insertFromClipboard(context)
     ),
     vscode.languages.registerDefinitionProvider(
       [{ language: 'html' }, { language: 'typescript' }],

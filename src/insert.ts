@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import { isI18nFile } from './util'
 import { EXTENSION_NAME } from './constant'
 
-export default async function insert() {
+export default async function insert(context: vscode.ExtensionContext) {
   const editor = vscode.window.activeTextEditor
 
   if (!editor) {
@@ -13,5 +13,5 @@ export default async function insert() {
     ? `${EXTENSION_NAME}.insertFromClipboard`
     : `${EXTENSION_NAME}.insertFromSelections`
 
-  await vscode.commands.executeCommand(command)
+  await vscode.commands.executeCommand(command, context)
 }

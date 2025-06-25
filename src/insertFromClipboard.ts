@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import { getFormattedI18nText, isI18nFile, updateJsonContent } from './util'
 
-export default async function insertFromClipboard() {
+export default async function insertFromClipboard(context: vscode.ExtensionContext) {
   const editor = vscode.window.activeTextEditor
 
   if (!editor) {
