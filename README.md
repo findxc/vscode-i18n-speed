@@ -14,6 +14,10 @@
 - Add go to definition for i18n identifier in html / ts file
 - Add go to references for i18n json file keys
 
+## For development
+
+- Need to first install extensions in `.vscode/extensions.json`
+
 ## TODO
 
 TBD hhh
