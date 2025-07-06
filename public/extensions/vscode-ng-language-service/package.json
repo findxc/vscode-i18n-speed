@@ -1,0 +1,96 @@
+{
+  "name": "ng-template",
+  "displayName": "Angular Language Service",
+  "description": "Editor services for Angular templates",
+  "version": "20.0.1",
+  "publisher": "Angular",
+  "license": "MIT",
+  "contributes": {
+    "grammars": [
+      {
+        "path": "./syntaxes/inline-template.json",
+        "scopeName": "inline-template.ng",
+        "injectTo": [
+          "source.ts"
+        ],
+        "embeddedLanguages": {
+          "text.html.derivative": "html",
+          "source.css": "css",
+          "source.js": "javascript"
+        }
+      },
+      {
+        "path": "./syntaxes/inline-styles.json",
+        "scopeName": "inline-styles.ng",
+        "injectTo": [
+          "source.ts"
+        ],
+        "embeddedLanguages": {
+          "source.css.scss": "scss"
+        }
+      },
+      {
+        "path": "./syntaxes/template.json",
+        "scopeName": "template.ng",
+        "injectTo": [
+          "text.html.derivative",
+          "source.ts"
+        ],
+        "embeddedLanguages": {
+          "text.html": "html",
+          "source.css": "css",
+          "expression.ng": "javascript"
+        }
+      },
+      {
+        "path": "./syntaxes/template-blocks.json",
+        "scopeName": "template.blocks.ng",
+        "injectTo": [
+          "text.html.derivative",
+          "source.ts"
+        ],
+        "embeddedLanguages": {
+          "text.html": "html",
+          "control.block.expression.ng": "javascript",
+          "control.block.body.ng": "html"
+        }
+      },
+      {
+        "path": "./syntaxes/let-declaration.json",
+        "scopeName": "template.let.ng",
+        "injectTo": [
+          "text.html.derivative",
+          "source.ts"
+        ]
+      },
+      {
+        "path": "./syntaxes/host-object-literal.json",
+        "scopeName": "host-object-literal.ng",
+        "injectTo": [
+          "source.ts"
+        ],
+        "embeddedLanguages": {
+          "text.html.derivative": "html",
+          "expression.ng": "javascript",
+          "source.ts": "typescript"
+        }
+      },
+      {
+        "path": "./syntaxes/template-tag.json",
+        "scopeName": "template.tag.ng",
+        "injectTo": [
+          "text.html.derivative",
+          "source.ts"
+        ]
+      },
+      {
+        "path": "./syntaxes/expression.json",
+        "scopeName": "expression.ng"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/vscode-ng-language-service"
+  }
+}

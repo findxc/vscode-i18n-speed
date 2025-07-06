@@ -6,11 +6,15 @@ import DefinitionProviderForI18nIdentifier from './DefinitionProviderForI18nIden
 import ReferenceProviderForI18nFile from './ReferenceProviderForI18nFile'
 import { EXTENSION_NAME } from './constant'
 import cacheI18nUris from './cacheI18nUris'
+import selectStringsNeedI18n from './selectStringsNeedI18n'
 
 export function activate(context: vscode.ExtensionContext) {
   cacheI18nUris(context)
 
   const disposables = [
+    vscode.commands.registerCommand(`${EXTENSION_NAME}.selectStringsNeedI18n`, () =>
+      selectStringsNeedI18n(context)
+    ),
     vscode.commands.registerCommand(`${EXTENSION_NAME}.insert`, () =>
       insert(context)
     ),

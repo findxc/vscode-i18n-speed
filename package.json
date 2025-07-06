@@ -22,6 +22,10 @@
   "contributes": {
     "commands": [
       {
+        "command": "i18n-speed.selectStringsNeedI18n",
+        "title": "i18n: Select Strings Need I18n"
+      },
+      {
         "command": "i18n-speed.insert",
         "title": "i18n: Insert"
       },
@@ -40,14 +44,19 @@
     ],
     "keybindings": [
       {
-        "command": "i18n-speed.insert",
+        "command": "i18n-speed.selectStringsNeedI18n",
         "key": "ctrl+1",
         "mac": "cmd+1"
       },
       {
-        "command": "i18n-speed.insertForceHashKey",
+        "command": "i18n-speed.insert",
         "key": "ctrl+2",
         "mac": "cmd+2"
+      },
+      {
+        "command": "i18n-speed.insertForceHashKey",
+        "key": "ctrl+3",
+        "mac": "cmd+3"
       }
     ],
     "configuration": [
@@ -137,6 +146,7 @@
     "@typescript-eslint/parser": "^8.31.1",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.5.2",
+    "copy-webpack-plugin": "^13.0.0",
     "eslint": "^9.25.1",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.3",
@@ -144,6 +154,8 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.2.0"
   }
 }
