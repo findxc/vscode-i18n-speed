@@ -6,14 +6,16 @@ import DefinitionProviderForI18nIdentifier from './DefinitionProviderForI18nIden
 import ReferenceProviderForI18nFile from './ReferenceProviderForI18nFile'
 import { EXTENSION_NAME } from './constant'
 import cacheI18nUris from './cacheI18nUris'
-import selectStringsNeedI18n from './selectStringsNeedI18n'
+import { initTextMate, selectStringsNeedI18n } from './textmate'
 
 export function activate(context: vscode.ExtensionContext) {
   cacheI18nUris(context)
+  initTextMate(context)
 
   const disposables = [
-    vscode.commands.registerCommand(`${EXTENSION_NAME}.selectStringsNeedI18n`, () =>
-      selectStringsNeedI18n(context)
+    vscode.commands.registerCommand(
+      `${EXTENSION_NAME}.selectStringsNeedI18n`,
+      () => selectStringsNeedI18n(context)
     ),
     vscode.commands.registerCommand(`${EXTENSION_NAME}.insert`, () =>
       insert(context)
@@ -24,11 +26,11 @@ export function activate(context: vscode.ExtensionContext) {
     ),
     vscode.commands.registerCommand(
       `${EXTENSION_NAME}.insertFromSelections`,
-      (forceHashKey) => insertFromSelections(context, forceHashKey)
+      forceHashKey => insertFromSelections(context, forceHashKey)
     ),
     vscode.commands.registerCommand(
       `${EXTENSION_NAME}.insertFromClipboard`,
-      (forceHashKey) => insertFromClipboard(context, forceHashKey)
+      forceHashKey => insertFromClipboard(context, forceHashKey)
     ),
     vscode.languages.registerDefinitionProvider(
       [{ language: 'html' }, { language: 'typescript' }],

@@ -6,17 +6,24 @@ import {
   IValidEmbeddedLanguagesMap,
   IValidGrammarDefinition,
   TMScopeRegistry,
-} from './textmate/TMScopeRegistry'
-import {
-  EXTENSION_GRAMMARS,
-  LANGUAGE_STRING_TO_NUMBER,
-} from './textmate/constant'
-import validateGrammarDefinition from './textmate/validateGrammarDefinition'
+} from './TMScopeRegistry'
+import { EXTENSION_GRAMMARS, LANGUAGE_STRING_TO_NUMBER } from './constant'
+import validateGrammarDefinition from './validateGrammarDefinition'
 
-// TODO add cache for grammars
-export default async function selectStringsNeedI18n(
-  context: vscode.ExtensionContext
-) {
+// TODO add cache for grammars?
+// const grammarMap: {
+//   [P: keyof typeof LANGUAGE_STRING_TO_NUMBER]: vsctm.IGrammar
+// } = {}
+
+const _languageToScope = new Map<string, string>()
+const _scopeRegistry = new TMScopeRegistry()
+const _injectedEmbeddedLanguages: {
+  [scopeName: string]: IValidEmbeddedLanguagesMap[]
+} = {}
+
+let registry: vsctm.Registry
+
+export async function initTextMate(context: vscode.ExtensionContext) {
   const onigWasmUri = vscode.Uri.joinPath(
     context.extensionUri,
     'public/onig.wasm'
@@ -34,11 +41,9 @@ export default async function selectStringsNeedI18n(
     }
   })
 
-  const _scopeRegistry = new TMScopeRegistry()
   const _injections: { [scopeName: string]: string[] } = {}
-  const _languageToScope = new Map<string, string>()
 
-  const registry = new vsctm.Registry({
+  registry = new vsctm.Registry({
     onigLib: vscodeOnigurumaLib,
     loadGrammar: async (scopeName: string) => {
       const grammarDefinition = _scopeRegistry.getGrammarDefinition(scopeName)
@@ -69,10 +74,6 @@ export default async function selectStringsNeedI18n(
       return injections
     },
   })
-
-  const _injectedEmbeddedLanguages: {
-    [scopeName: string]: IValidEmbeddedLanguagesMap[]
-  } = {}
 
   const grammarDefinitions: IValidGrammarDefinition[] =
     EXTENSION_GRAMMARS.reduce((total, current) => {
@@ -120,86 +121,84 @@ export default async function selectStringsNeedI18n(
       _languageToScope.set(validGrammar.language, validGrammar.scopeName)
     }
   }
+}
 
-  ;(async function () {
-    const editor = vscode.window.activeTextEditor
+export async function selectStringsNeedI18n(context: vscode.ExtensionContext) {
+  const editor = vscode.window.activeTextEditor
+  if (!editor) {
+    return
+  }
 
-    if (!editor) {
-      return
-    }
+  const languageId = editor.document.languageId
+  const encodedLanguageId = LANGUAGE_STRING_TO_NUMBER[languageId]
+  const scopeName = _languageToScope.get(languageId) as string
+  const grammarDefinition = _scopeRegistry.getGrammarDefinition(
+    scopeName
+  ) as IValidGrammarDefinition
 
-    const languageId = editor.document.languageId
-
-    const encodedLanguageId = LANGUAGE_STRING_TO_NUMBER[languageId]
-    const scopeName = _languageToScope.get(languageId) as string
-    const grammarDefinition = _scopeRegistry.getGrammarDefinition(
-      scopeName
-    ) as IValidGrammarDefinition
-
-    const embeddedLanguages = grammarDefinition!.embeddedLanguages
-    if (_injectedEmbeddedLanguages[scopeName]) {
-      const injectedEmbeddedLanguages = _injectedEmbeddedLanguages[scopeName]
-      for (const injected of injectedEmbeddedLanguages) {
-        for (const scope of Object.keys(injected)) {
-          embeddedLanguages[scope] = injected[scope]
-        }
+  const embeddedLanguages = grammarDefinition.embeddedLanguages
+  if (_injectedEmbeddedLanguages[scopeName]) {
+    const injectedEmbeddedLanguages = _injectedEmbeddedLanguages[scopeName]
+    for (const injected of injectedEmbeddedLanguages) {
+      for (const scope of Object.keys(injected)) {
+        embeddedLanguages[scope] = injected[scope]
       }
     }
+  }
 
-    let grammar
+  let grammar
 
-    try {
-      grammar = await registry.loadGrammarWithConfiguration(
-        scopeName,
-        encodedLanguageId,
-        {
-          embeddedLanguages,
-          tokenTypes: <any>grammarDefinition.tokenTypes,
-          balancedBracketSelectors: grammarDefinition.balancedBracketSelectors,
-          unbalancedBracketSelectors:
-            grammarDefinition.unbalancedBracketSelectors,
-        }
-      )
-    } catch (err) {
-      throw err
+  try {
+    grammar = await registry.loadGrammarWithConfiguration(
+      scopeName,
+      encodedLanguageId,
+      {
+        embeddedLanguages,
+        tokenTypes: <any>grammarDefinition.tokenTypes,
+        balancedBracketSelectors: grammarDefinition.balancedBracketSelectors,
+        unbalancedBracketSelectors:
+          grammarDefinition.unbalancedBracketSelectors,
+      }
+    )
+  } catch (err) {
+    throw err
+  }
+
+  if (!grammar) {
+    return
+  }
+
+  const text = editor.document.getText().split('\n')
+  let ruleStack = vsctm.INITIAL
+
+  const lineToText = 'Preview Menu'
+
+  for (let i = 0; i < text.length; i++) {
+    const line = text[i]
+    const lineTokens = grammar.tokenizeLine(line, ruleStack)
+    if (line.includes(lineToText)) {
+      console.log(`\nTokenizing line: ${line}`)
     }
-
-    if (!grammar) {
-      return
-    }
-
-    const text = editor.document.getText().split('\n')
-    let ruleStack = vsctm.INITIAL
-
-    const lineToText = 'Preview Menu'
-
-    for (let i = 0; i < text.length; i++) {
-      const line = text[i]
-      const lineTokens = grammar.tokenizeLine(line, ruleStack)
+    for (let j = 0; j < lineTokens.tokens.length; j++) {
+      const token = lineTokens.tokens[j]
       if (line.includes(lineToText)) {
-        console.log(`\nTokenizing line: ${line}`)
+        console.log(
+          ` - token from ${token.startIndex} to ${token.endIndex} ` +
+            `(${line.substring(token.startIndex, token.endIndex)}) ` +
+            `with scopes ${token.scopes.join(', ')}`
+        )
       }
-      for (let j = 0; j < lineTokens.tokens.length; j++) {
-        const token = lineTokens.tokens[j]
-        if (line.includes(lineToText)) {
-          console.log(
-            ` - token from ${token.startIndex} to ${token.endIndex} ` +
-              `(${line.substring(token.startIndex, token.endIndex)}) ` +
-              `with scopes ${token.scopes.join(', ')}`
-          )
-        }
-      }
-      ruleStack = lineTokens.ruleStack
     }
+    ruleStack = lineTokens.ruleStack
+  }
 
-    // const options = {
-    // 	languageId: languageId,
-    // 	grammar: grammar,
-    // 	initialState: vsctm.INITIAL,
-    // 	containsEmbeddedLanguages: containsEmbeddedLanguages,
-    // 	sourceExtensionId: grammarDefinition.sourceExtensionId,
-    // }
-  })()
+  // const options = {
+  // 	languageId: languageId,
+  // 	grammar: grammar,
+  // 	initialState: vsctm.INITIAL,
+  // 	containsEmbeddedLanguages: containsEmbeddedLanguages,
+  // 	sourceExtensionId: grammarDefinition.sourceExtensionId,
+  // }
 
   console.log('success')
 }

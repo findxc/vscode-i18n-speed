@@ -22,4 +22,4 @@ export const EXTENSION_GRAMMARS = [
 export const LANGUAGE_STRING_TO_NUMBER: { [P: string]: number } = {
   html: 2,
   typescript: 3,
-}
+} as const  
