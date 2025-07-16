@@ -230,3 +230,9 @@ export function generateHash(): string {
   // TODO may be need to use a better hash function
   return (+new Date() * Math.random()).toString(36).substring(0, 4)
 }
+
+export function requireWithoutCache(path: string) {
+  const res = __non_webpack_require__(path)
+  delete __non_webpack_require__.cache[path]
+  return res
+}
